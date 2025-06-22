@@ -1,16 +1,17 @@
 import requests
-from bs4 import BeautifulSoup
-from PIL import Image
-from io import BytesIO
 from telegram import Bot
-from config import TOKEN, CHANNEL, HEADERS, LOGIN, PASSWORD
+from config import TOKEN, CHANNEL, HEADERS
 from parser import get_online_girl
 from image_utils import crop_logo
 
 def post_to_telegram(profile):
-    print(f"Публикуем пост: {profile['name']}, {profile['age']}, {profile['country']}")
     bot = Bot(token=TOKEN)
     response = requests.get(profile['img'], headers=HEADERS)
+    
+    if response.status_code != 200:
+        print("Ошибка загрузки изображения:", response.status_code)
+        return
+
     img = crop_logo(response.content)
 
     caption = (
@@ -26,9 +27,10 @@ def post_to_telegram(profile):
     )
 
 if __name__ == "__main__":
-    girl = get_online_girl(LOGIN, PASSWORD)
+    girl = get_online_girl()
     if girl:
         post_to_telegram(girl)
     else:
         print("Нет подходящих анкет онлайн.")
+
 
