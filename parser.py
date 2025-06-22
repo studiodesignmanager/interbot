@@ -1,24 +1,28 @@
 import requests
 from bs4 import BeautifulSoup
-from config import HEADERS, LOGIN_URL, LOGIN_DATA
+from config import HEADERS, LOGIN_URL, LOGIN, PASSWORD
 
 def get_online_girl():
     with requests.Session() as session:
         # Логинимся
-        login_resp = session.post(LOGIN_URL, data=LOGIN_DATA, headers=HEADERS)
-        if login_resp.status_code != 200:
-            print("Ошибка логина:", login_resp.status_code)
+        login_payload = {
+            "email": LOGIN,
+            "password": PASSWORD
+        }
+        login_resp = session.post(LOGIN_URL, data=login_payload, headers=HEADERS)
+        if login_resp.status_code != 200 or "logout" not in login_resp.text.lower():
+            print("Ошибка логина или не удалось войти.")
             return None
-        
+
         url = "https://findbride.com/members?age%5Bfrom%5D=25&age%5Bto%5D=40"
         resp = session.get(url, headers=HEADERS)
         if resp.status_code != 200:
             print("Ошибка получения списка анкет:", resp.status_code)
             return None
-        
+
         soup = BeautifulSoup(resp.text, 'html.parser')
         profiles = soup.select(".member-item")
-        
+
         for profile in profiles:
             if 'online' not in profile.get('class', []):
                 continue
