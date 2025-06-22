@@ -3,7 +3,10 @@ CHANNEL = '@dating_service_channel'
 HEADERS = {'User-Agent': 'Mozilla/5.0'}
 
 LOGIN_URL = "https://findbride.com/login"
+LOGIN = "guestodessa1@gmail.com"
+PASSWORD = "8gr$DwXQz"
+
 LOGIN_DATA = {
-    "email": "guestodessa1@gmail.com",
-    "password": "8gr$DwXQz"
+    "email": LOGIN,
+    "password": PASSWORD
 }
